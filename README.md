@@ -200,13 +200,13 @@ When you import a service shell, most shells are automatically assigned a defaul
 	1. Add the required number of Ixia Chassis resource ports to the blueprint. The number of Ixia Chassis resource ports in the blueprint should match the number of ports in the IxLoad configuration. 
 	For example: if you have a configuration with two ports:
 	
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](https://github.com/QualiSystems/Ixia-IxLoadController-Shell/blob/master/ixload_controller_configuration_two_ports.png)
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](https://github.com/QualiSystems/Ixia-IxLoad-Controller-Shell-2G/blob/master/ixload_controller_configuration_two_ports.png)
 
 	2. Hover over the Ixia Chassis resource and select **More Options>Add sub-resource** from the context menu. 
 	3. Use the search and filtering options to find the port resources you want to use.
 	4. Select the port resources from the pane and drag them into the workspace. The ports are displayed in the **Resource Structure** tab of the chassis resource.
 	
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](https://github.com/QualiSystems/Ixia-IxLoadController-Shell/blob/master/ixload_controller_blueprint_two_ports.png)
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](https://github.com/QualiSystems/Ixia-IxLoad-Controller-Shell-2G/blob/master/ixload_controller_blueprint_two_ports.png)
 
 3. In the blueprint toolbar, click **App/Service>CS_TrafficGeneratorController** and drag the **xia IxLoad Controller Shell 2G** service into the diagram.
 
@@ -214,14 +214,14 @@ When you import a service shell, most shells are automatically assigned a defaul
 
 5. Edit the **Ixia IxLoad Controller Shell 2G** service parameters if required, see [Configuring a new service](#configuring_a_new_service).
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](https://github.com/QualiSystems/Ixia-IxLoadController-Shell/blob/master/ixload_controller_configuration_parameters.png)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](https://github.com/QualiSystems/Ixia-IxLoad-Controller-Shell-2G/blob/master/ixload_controller_configuration_parameters.png)
 
 6. Map the configuration ports to the blueprint ports. For each port in the IxLoad configuration, assign a physical port from the ports in the blueprint. 
 	1. Hover over the Ixia chassis resource and select **Structure** from the context menu. The **Resource Structure** side pane is displayed, listing the resource's ports. 
 	2. For each port, click the down arrow and select **Attributes**.
 	3. Set the **Logical Name** to the port name in the IxLoad configuration.
 
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](https://github.com/QualiSystems/Ixia-IxLoadController-Shell/blob/master/ixload_controller_mapping_ports.png)
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](https://github.com/QualiSystems/Ixia-IxLoad-Controller-Shell-2G/blob/master/ixload_controller_mapping_ports.png)
 
 
 # References
@@ -235,7 +235,7 @@ To connect with Quali users and experts from around the world, ask questions and
 
 # Release Notes 
 
-For release updates, see the shell's [GitHub releases page](https://github.com/QualiSystems/Ixia-IxLoadController-Shell/releases).
+For release updates, see the shell's [GitHub releases page](https://github.com/QualiSystems/Ixia-IxLoad-Controller-Shell-2G/releases).
 
 ### Known Issues
 • All Execution Servers that run sandboxes with the IxLoad controller should have the same Client Install Path. Therefore, all Execution Servers must be either Windows or Linux.
