@@ -48,7 +48,7 @@ For detailed information about the shell’s structure and attributes, see the [
 
 ### Requirements
 
-Release: **Ixia IxLoad Controller 1G**
+Release: **Ixia IxLoad Controller 2G**
 
 ▪ IxLoad client: Should be installed on the Execution Server machine.
 
@@ -84,7 +84,7 @@ The shell comprises:
 |ixia_ixload_controller_gen_2_offline_requirements.zip	|Shell Python dependencies (for offline deployments only)|
 
 ## Importing and Configuring the Shell
-This section describes how to import the Ixia IxLoad Controller 1G shell and configure and modify the shell’s devices. 
+This section describes how to import the Ixia IxLoad Controller 2G shell and configure and modify the shell’s devices. 
 
 ### Importing the shell into CloudShell
 
