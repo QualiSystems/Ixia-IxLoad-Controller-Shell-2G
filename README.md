@@ -212,7 +212,7 @@ When you import a service shell, most shells are automatically assigned a defaul
 
 4. Reserve the blueprint.
 
-5. Edit the **Ixia IxLoad Controller Shell 2G** service parameters if required, see [Configuring a new service](#configuring_a_new_service).
+5. Edit the **Ixia IxLoad Controller Shell 2G** service parameters if required.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](https://github.com/QualiSystems/Ixia-IxLoad-Controller-Shell-2G/blob/master/ixload_controller_configuration_parameters.png)
 
