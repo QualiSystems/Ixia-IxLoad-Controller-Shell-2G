@@ -67,7 +67,7 @@ For Traffic Generator shells, commands are configured and executed from the cont
 |:-----|:-----|
 |Autoload|Discovers the chassis, its hierarchy and attributes when creating the resource. The command can be rerun in the **Inventory** dashboard and not in the sandbox, as for other commands.|
 |Load Configuration|Loads configuration and reserves ports.<br>Set the command input as follows:<br>* **Ixia config file name** (config_file_name (String)): Full path to the Ixia configuration file name (rxf).|
-|Start Test|Starts traffic test.<br>Possible values:<br>* **Blocking**: **True**: Returns after traffic finishes to run; **False**: Returns immediately|
+|Start Test|Starts traffic test.<br>Possible values:<br>* **Blocking**:<br>  - **True**: Returns after traffic finishes to run;<br>  - **False**: Returns immediately|
 |Stop Test|Stops traffic test.|
 |Get Statistics|Gets view statistics.<br>Possible values:<br>* **View Name**: Name of .csv file from the IxLoad results directory (under the shell logs directory).<br>* **Output type**: **CSV**, **JSON**. If **CSV**, the statistics will be attached to the blueprint .csv file.|
 
@@ -94,9 +94,7 @@ This section describes how to import the Ixia IxLoad Controller 2G shell and con
   3. Click **Import**.
   4. In the dialog box, navigate to the shell's zip package, select it and click **Open**.
 
-The shell is displayed in the **Shells** page and can be used by domain administrators in all CloudShell domains to create new inventory resources, as explained in [Adding Inventory Resources](http://help.quali.com/Online%20Help/9.0/Portal/Content/CSP/INVN/Add-Rsrc-Tmplt.htm?Highlight=adding%20inventory%20resources). 
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The service can now be added to a blueprint from the **Apps/Service** catalog's **Networking** category.  
+The service can now be added to a blueprint from the **Apps/Service** catalog's **Networking** category.  
 
 ### Offline installation of a shell
 
@@ -208,7 +206,7 @@ When you import a service shell, most shells are automatically assigned a defaul
 	
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](https://github.com/QualiSystems/Ixia-IxLoad-Controller-Shell-2G/blob/master/ixload_controller_blueprint_two_ports.png)
 
-3. In the blueprint toolbar, click **App/Service>CS_TrafficGeneratorController** and drag the **xia IxLoad Controller Shell 2G** service into the diagram.
+3. In the blueprint toolbar, click **App/Service>CS_TrafficGeneratorController** and drag the **Ixia IxLoad Controller Shell 2G** service into the diagram.
 
 4. Reserve the blueprint.
 
@@ -238,6 +236,6 @@ To connect with Quali users and experts from around the world, ask questions and
 For release updates, see the shell's [GitHub releases page](https://github.com/QualiSystems/Ixia-IxLoad-Controller-Shell-2G/releases).
 
 ### Known Issues
-• All Execution Servers that run sandboxes with the IxLoad controller should have the same Client Install Path. Therefore, all Execution Servers must be either Windows or Linux.
+• All Execution Servers that run sandboxes which include the IxLoad controller should have the same **Client Install Path**. Therefore, all Execution Servers must be either Windows or Linux.
 
-• IxLoad can run up to two instances per machine (Execution Server). If there are more than two instances running, **Load Configuration** of any additional reservations will eventually fail due to timeout.
+• IxLoad can run up to two instances per machine (Execution Server). If there are more than two instances running, **Load Configuration** run on any additional reservations will eventually fail, due to timeout.
