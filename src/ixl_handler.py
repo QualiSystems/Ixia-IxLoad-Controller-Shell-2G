@@ -1,4 +1,3 @@
-
 import json
 import csv
 import io
@@ -18,6 +17,7 @@ from cloudshell.shell.core.session.cloudshell_session import CloudShellSessionCo
 
 
 class IxlHandler(TrafficHandler):
+    TEST_RESULTS_DIR_NAME_TPL = "IxLoad Test Results/{reservation_id}_{ctrl_name}"
 
     def __init__(self, shell_name=""):
         super(IxlHandler, self).__init__()
@@ -38,26 +38,44 @@ class IxlHandler(TrafficHandler):
 
         self.logger.info('connecting to server {}:{} version {}'.format(address, port, version))
         self.ixl.connect(version=version, ip=address, port=port)
-        if sys.platform == 'win32':
-            log_file_name = self.logger.handlers[0].baseFilename
-            self.server_results_dir = (os.path.splitext(log_file_name)[0] + '--Results').replace('\\', '/')
-            self.client_results_dir = self.server_results_dir
-        else:
-            self.server_results_dir = 'c:/temp/IxLoadResults'
-            self.client_results_dir = '/IxLoadResults'
-        logger.info('results directory = ' + self.server_results_dir)
-        self.ixl.controller.set_results_dir(self.server_results_dir)
+
+        # if sys.platform == 'win32':
+        #     log_file_name = self.logger.handlers[0].baseFilename
+        #     self.server_results_dir = (os.path.splitext(log_file_name)[0] + '--Results').replace('\\', '/')
+        #     self.client_results_dir = self.server_results_dir
+        # else:
+        #     self.server_results_dir = 'c:/temp/IxLoadResults'
+        #     self.client_results_dir = '/IxLoadResults'
+        # logger.info('results directory = ' + self.server_results_dir)
+        # self.ixl.controller.set_results_dir(self.server_results_dir)
 
     def tearDown(self):
         self.ixl.disconnect()
 
     def load_config(self, context, ixia_config_file_name):
+        """
+
+        :param context:
+        :param ixia_config_file_name:
+        :return:
+        """
+        reservation_id = context.reservation.reservation_id
+        venv_dir = sys.exec_prefix  # path to the python virtual environment
+
+        test_results_path = os.path.join(venv_dir, self.TEST_RESULTS_DIR_NAME_TPL.format(
+            reservation_id=reservation_id,
+            ctrl_name=context.resource.name)).replace('\\', '/')
+
+        self.server_results_dir = test_results_path
+        self.client_results_dir = test_results_path
+
+        self.logger.info('results directory = ' + self.server_results_dir)
+        self.ixl.controller.set_results_dir(self.server_results_dir)
 
         self.ixl.load_config(ixia_config_file_name)
         self.ixl.repository.test.set_attributes(enableForceOwnership=False)
         config_elements = self.ixl.repository.get_elements()
 
-        reservation_id = context.reservation.reservation_id
         my_api = CloudShellSessionContext(context).get_api()
 
         reservation_ports = {}

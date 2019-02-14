@@ -65,6 +65,14 @@ class IxiaIxloadControllerShell2GDriver(TrafficControllerDriver):
         """
         return super(IxiaIxloadControllerShell2GDriver, self).cleanup()
 
+    def cleanup_reservation(self, context):
+        """
+
+        :param context:
+        :return:
+        """
+        return self.cleanup()
+
     def keep_alive(self, context, cancellation_context):
         """
 
@@ -79,7 +87,7 @@ if __name__ == "__main__":
     import mock
     from cloudshell.shell.core.driver_context import ResourceCommandContext, ResourceContextDetails, ReservationContextDetails
 
-    address = '192.168.85.10'
+    address = '192.168.85.23'
     port = 8080
     ctrl_version = "8.40.0.277"
 
@@ -93,7 +101,7 @@ if __name__ == "__main__":
     context.reservation = ReservationContextDetails(*(None, ) * 7)
     context.resource.attributes = {}
 
-    for attr, value in [("Controller Address", address),
+    for attr, value in [("Address", address),
                         ("Controller TCP Port", port),
                         ("Controller Version", ctrl_version)]:
 
@@ -102,7 +110,7 @@ if __name__ == "__main__":
     context.resource.address = address
 
     context.connectivity = mock.MagicMock()
-    context.connectivity.server_address = "192.168.85.14"
+    context.connectivity.server_address = "192.168.85.22"
 
     dr = IxiaIxloadControllerShell2GDriver()
     dr.initialize(context)
