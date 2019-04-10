@@ -52,7 +52,7 @@ Release: **Ixia IxLoad Controller 2G**
 
 ▪ IxLoad client: Should be installed on the Execution Server machine.
 
-▪ CloudShell: 8.1 and above
+▪ CloudShell version: 8.3 GA Patch 3, 9.0 Patch 2, 9.1 GA and above
 
 ### Data Model
 
