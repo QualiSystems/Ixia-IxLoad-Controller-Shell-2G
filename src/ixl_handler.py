@@ -17,60 +17,36 @@ from cloudshell.shell.core.session.cloudshell_session import CloudShellSessionCo
 
 
 class IxlHandler(TrafficHandler):
-    TEST_RESULTS_DIR_NAME_TPL = "IxLoad Test Results/{reservation_id}_{ctrl_name}"
 
-    def __init__(self, shell_name=""):
-        super(IxlHandler, self).__init__()
-        self.namespace = "{}.".format(shell_name) if shell_name else ""
+    namespace = 'IxLoad Controller Shell 2G'
 
     def initialize(self, context, logger):
 
         self.logger = logger
         self.ixl = init_ixl(self.logger)
 
-        version = context.resource.attributes['{}Controller Version'.format(self.namespace)]
-        address = context.resource.attributes['{}Address'.format(self.namespace)]
-        if not address:
-            address = 'localhost'
-        port = context.resource.attributes['{}Controller TCP Port'.format(self.namespace)]
-        if not port:
-            port = '8080'
+        ixload_gw = context.resource.attributes['{}.Address'.format(self.namespace)]
+        if not ixload_gw:
+            ixload_gw = 'localhost'
+        license_server = context.resource.attributes['{}.License Server'.format(self.namespace)]
+        version = context.resource.attributes['{}.Controller Version'.format(self.namespace)]
+        apikey = context.resource.attributes['{}.ApiKey'.format(self.namespace)]
+        auth = {'apikey': apikey, 'crt': None}
 
-        self.logger.info('connecting to server {}:{} version {}'.format(address, port, version))
-        self.ixl.connect(version=version, ip=address, port=port)
-
-        # if sys.platform == 'win32':
-        #     log_file_name = self.logger.handlers[0].baseFilename
-        #     self.server_results_dir = (os.path.splitext(log_file_name)[0] + '--Results').replace('\\', '/')
-        #     self.client_results_dir = self.server_results_dir
-        # else:
-        #     self.server_results_dir = 'c:/temp/IxLoadResults'
-        #     self.client_results_dir = '/IxLoadResults'
-        # logger.info('results directory = ' + self.server_results_dir)
-        # self.ixl.controller.set_results_dir(self.server_results_dir)
+        self.logger.info('connecting to server {} version {} using default port'.format(ixload_gw, version))
+        self.ixl.connect(version=version, ip=ixload_gw, port=None, auth=auth)
+        if license_server:
+            self.ixl.controller.set_licensing(license_server)
+        if not self.ixl.is_remote:
+            log_file_name = self.logger.handlers[0].baseFilename
+            results_dir = (os.path.splitext(log_file_name)[0] + '--Results').replace('\\', '/')
+            self.ixl.controller.set_results_dir(results_dir)
 
     def tearDown(self):
         self.ixl.disconnect()
 
     def load_config(self, context, ixia_config_file_name):
-        """
-
-        :param context:
-        :param ixia_config_file_name:
-        :return:
-        """
         reservation_id = context.reservation.reservation_id
-        venv_dir = sys.exec_prefix  # path to the python virtual environment
-
-        test_results_path = os.path.join(venv_dir, self.TEST_RESULTS_DIR_NAME_TPL.format(
-            reservation_id=reservation_id,
-            ctrl_name=context.resource.name)).replace('\\', '/')
-
-        self.server_results_dir = test_results_path
-        self.client_results_dir = test_results_path
-
-        self.logger.info('results directory = ' + self.server_results_dir)
-        self.ixl.controller.set_results_dir(self.server_results_dir)
 
         self.ixl.load_config(ixia_config_file_name)
         self.ixl.repository.test.set_attributes(enableForceOwnership=False)
@@ -112,7 +88,7 @@ class IxlHandler(TrafficHandler):
 
     def get_statistics(self, context, view_name, output_type):
 
-        stats_obj = IxlStatView(view_name, self.client_results_dir)
+        stats_obj = IxlStatView(view_name)
         stats_obj.read_stats()
         statistics = stats_obj.get_all_stats()
         if output_type.lower().strip() == 'json':

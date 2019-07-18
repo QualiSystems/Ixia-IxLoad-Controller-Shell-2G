@@ -50,7 +50,7 @@ For detailed information about the shell’s structure and attributes, see the [
 
 Release: **Ixia IxLoad Controller 2G**
 
-▪ IxLoad client: Should be installed on the Execution Server machine.
+▪ IxLoadGateway: 8.40 and 8.50, Windows or Linux.
 
 ▪ CloudShell version: 8.3 GA Patch 3, 9.0 Patch 2, 9.1 GA and above
 
@@ -223,7 +223,6 @@ When you import a service shell, most shells are automatically assigned a defaul
 
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](https://github.com/QualiSystems/Ixia-IxLoad-Controller-Shell-2G/blob/master/ixload_controller_mapping_ports.png)
 
-
 # References
 To download and share integrations, see [Quali Community's Integrations](https://community.quali.com/integrations). 
 
@@ -234,10 +233,10 @@ To suggest an idea for the product, see [Quali's Idea box](https://community.qua
 To connect with Quali users and experts from around the world, ask questions and discuss issues, see [Quali's Community forums](https://community.quali.com/forums). 
 
 # Release Notes 
-
 For release updates, see the shell's [GitHub releases page](https://github.com/QualiSystems/Ixia-IxLoad-Controller-Shell-2G/releases).
 
 ### Known Issues
-• All Execution Servers that run sandboxes with the IxLoad controller should have the same Client Install Path. Therefore, all Execution Servers must be either Windows or Linux.
-
-• IxLoad can run up to two instances per machine (Execution Server). If there are more than two instances running, **Load Configuration** of any additional reservations will eventually fail due to timeout.
+* Controller Port attribute is ignored. The shell will use 8080 for http and 8443 for https.
+* Authentication with crt files is not supported.
+* Get Statistics will work only if IxLoadGateway runs on localhost or if IxLoadGateway version supports file download (please consult Ixia for exact versions).
+* When using remote IxLoad gateway, configurations with additional files (on top of the rxf itself) are not supported. 
