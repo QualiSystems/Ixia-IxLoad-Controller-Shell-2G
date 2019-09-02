@@ -4,7 +4,7 @@
 
 Release date: January 2019
 
-Shell version: 1.0.0
+Shell version: 2.1.0
 
 Document version: 1.0
 
@@ -50,7 +50,7 @@ For detailed information about the shell’s structure and attributes, see the [
 
 Release: **Ixia IxLoad Controller 2G**
 
-▪ IxLoadGateway: 8.40 and 8.50, Windows or Linux.
+▪ IxLoadGateway: 8.40 to 9.00, Windows or Linux.
 
 ▪ CloudShell version: 8.3 GA Patch 3, 9.0 Patch 2, 9.1 GA and above
 

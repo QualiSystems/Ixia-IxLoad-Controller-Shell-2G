@@ -11,7 +11,7 @@ import test_ixload_configs
 from test_ixload_configs import namespace, server_properties
 
 
-controller = test_ixload_configs.windows_840
+controller = test_ixload_configs.linux_900
 
 attributes = {'{}.Address'.format(namespace): controller,
               '{}.Controller Version'.format(namespace): server_properties[controller]['ixversion'],

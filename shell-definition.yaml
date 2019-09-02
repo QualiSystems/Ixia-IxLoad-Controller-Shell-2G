@@ -7,27 +7,9 @@ metadata:
   template_author: Quali
   template_icon: shell-icon.png
   template_name: Ixia IxLoad Controller Shell 2G
-  template_version: 2.0.0
+  template_version: 2.1.0
 node_types:
   vendor.resource.IxLoad Controller Shell 2G:
-    derived_from: cloudshell.nodes.TrafficGeneratorController
-    properties:
-      License Server:
-        description: License server IP address.
-        default: localhost
-        type: string
-        tags:
-        - user_input
-      Controller Version:
-        description: IxLoad gateway version.
-        type: string
-        tags:
-        - user_input
-      ApiKey:
-        description: IxLoad ApiKey for authenticated IxLoad gateways.
-        type: string
-        tags:
-        - user_input
     artifacts:
       driver:
         file: IxiaIxLoadControllerShell2GDriver.zip
@@ -38,4 +20,22 @@ node_types:
     capabilities:
       concurrent_execution:
         type: cloudshell.capabilities.SupportConcurrentCommands
+    derived_from: cloudshell.nodes.TrafficGeneratorController
+    properties:
+      ApiKey:
+        description: IxLoad ApiKey for authenticated IxLoad gateways.
+        tags:
+        - user_input
+        type: string
+      Controller Version:
+        description: IxLoad gateway version.
+        tags:
+        - user_input
+        type: string
+      License Server:
+        default: localhost
+        description: License server IP address.
+        tags:
+        - user_input
+        type: string
 tosca_definitions_version: tosca_simple_yaml_1_0

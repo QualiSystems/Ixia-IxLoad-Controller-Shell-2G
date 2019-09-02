@@ -1,5 +1,4 @@
-<Driver Description="Describe the purpose of your CloudShell shell" MainClass="driver.IxLoadControllerShell2GDriver"
-        Name="IxLoadControllerShell2GDriver" Version="1.0.0">
+<Driver Description="Describe the purpose of your CloudShell shell" MainClass="driver.IxLoadControllerShell2GDriver" Name="IxLoadControllerShell2GDriver" Version="2.1.0">
     <Layout>
 
         <Category Name="Hidden Commands">
@@ -14,30 +13,22 @@
 
         <Command Description="Reserve ports and load configuration" DisplayName="Load Configuration" Name="load_config">
             <Parameters>
-                <Parameter Name="config_file_location" Type="String" Mandatory="True"
-                           DisplayName="Configuration File Location"
-                           Description="Full path to the configuration file"/>
+                <Parameter Description="Full path to the configuration file" DisplayName="Configuration File Location" Mandatory="True" Name="config_file_location" Type="String" />
             </Parameters>
         </Command>
 
-        <Command Name="start_traffic" DisplayName="Start Test" Description="Start test">
+        <Command Description="Start test" DisplayName="Start Test" Name="start_traffic">
             <Parameters>
-                <Parameter Name="blocking" Type="Lookup" Mandatory="False" AllowedValues="True,False"
-                           DisplayName="Block"
-                           Description="True - return after traffic finish to run, False - return immediately"
-                           DefaultValue="False"/>
+                <Parameter AllowedValues="True,False" DefaultValue="False" Description="True - return after traffic finish to run, False - return immediately" DisplayName="Block" Mandatory="False" Name="blocking" Type="Lookup" />
             </Parameters>
         </Command>
 
-        <Command Name="stop_traffic" DisplayName="Stop Test" Description="Stop test"></Command>
+        <Command Description="Stop test" DisplayName="Stop Test" Name="stop_traffic" />
 
-        <Command Name="get_statistics" DisplayName="Get Statistics"
-                 Description="Get real time statistics as sandbox attachment">
+        <Command Description="Get real time statistics as sandbox attachment" DisplayName="Get Statistics" Name="get_statistics">
             <Parameters>
-                <Parameter Name="view_name" Type="String" Mandatory="True" DisplayName="View Name"
-                           Description="The requested view name, see shell's documentation for details"/>
-                <Parameter Name="output_type" Type="Lookup" Mandatory="True" AllowedValues="csv,json"
-                           DisplayName="Output Type" DefaultValue="csv" Description="CSV or JSON"/>
+                <Parameter Description="The requested view name, see shell's documentation for details" DisplayName="View Name" Mandatory="True" Name="view_name" Type="String" />
+                <Parameter AllowedValues="csv,json" DefaultValue="csv" Description="CSV or JSON" DisplayName="Output Type" Mandatory="True" Name="output_type" Type="Lookup" />
             </Parameters>
         </Command>
 

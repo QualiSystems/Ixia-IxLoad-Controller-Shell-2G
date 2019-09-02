@@ -12,7 +12,7 @@ import test_ixload_configs
 from test_ixload_configs import server_properties, namespace
 
 
-controller = test_ixload_configs.localhost_850
+controller = test_ixload_configs.linux_900
 
 attributes = [AttributeNameValue('{}.Address'.format(namespace), controller),
               AttributeNameValue('{}.Controller Version'.format(namespace), server_properties[controller]['ixversion']),
