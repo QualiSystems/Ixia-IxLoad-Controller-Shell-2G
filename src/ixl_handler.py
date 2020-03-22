@@ -1,68 +1,63 @@
 import json
 import csv
 import io
-import sys
 import os
-from distutils.dir_util import copy_tree
 from collections import OrderedDict
 
-from cloudshell.traffic.handler import TrafficHandler
-from cloudshell.traffic.tg_helper import (get_reservation_resources, get_address, is_blocking, attach_stats_csv,
-                                          get_family_attribute)
+from cloudshell.traffic.tg import TrafficHandler, attach_stats_csv
+from cloudshell.traffic.common import get_reservation_id, get_resources_from_reservation
+from cloudshell.traffic.tg_helper import get_address, is_blocking, get_family_attribute
 
 from ixload.ixl_app import init_ixl
 from ixload.ixl_statistics_view import IxlStatView
 
-from cloudshell.shell.core.session.cloudshell_session import CloudShellSessionContext
+from ixl_data_model import IxLoad_Controller_Shell_2G
 
 
 class IxlHandler(TrafficHandler):
 
-    namespace = 'IxLoad Controller Shell 2G'
-
     def initialize(self, context, logger):
 
-        self.logger = logger
+        service = IxLoad_Controller_Shell_2G.create_from_context(context)
+        super(self.__class__, self).initialize(service, logger)
+
         self.ixl = init_ixl(self.logger)
 
-        ixload_gw = context.resource.attributes['{}.Address'.format(self.namespace)]
-        if not ixload_gw:
-            ixload_gw = 'localhost'
-        license_server = context.resource.attributes['{}.License Server'.format(self.namespace)]
-        version = context.resource.attributes['{}.Controller Version'.format(self.namespace)]
-        apikey = context.resource.attributes['{}.ApiKey'.format(self.namespace)]
+        ixload_gw = self.resource.address if self.resource.address not in ['', 'na'] else 'localhost'
+        version = self.service.controller_version
+        apikey = self.service.apikey
         auth = {'apikey': apikey, 'crt': None}
 
         self.logger.info('connecting to server {} version {} using default port'.format(ixload_gw, version))
         self.ixl.connect(version=version, ip=ixload_gw, port=None, auth=auth)
-        if license_server:
-            self.ixl.controller.set_licensing(license_server)
+        if self.service.license_server:
+            self.ixl.controller.set_licensing(self.service.license_server)
         if not self.ixl.is_remote:
             log_file_name = self.logger.handlers[0].baseFilename
             results_dir = (os.path.splitext(log_file_name)[0] + '--Results').replace('\\', '/')
             self.ixl.controller.set_results_dir(results_dir)
 
-    def tearDown(self):
+    def cleanup(self):
         self.ixl.disconnect()
 
     def load_config(self, context, ixia_config_file_name):
-        reservation_id = context.reservation.reservation_id
+        reservation_id = get_reservation_id(context)
 
         self.ixl.load_config(ixia_config_file_name)
         self.ixl.repository.test.set_attributes(enableForceOwnership=False)
         config_elements = self.ixl.repository.get_elements()
 
-        my_api = CloudShellSessionContext(context).get_api()
 
         reservation_ports = {}
-        for port in get_reservation_resources(my_api, context.reservation.reservation_id,
-                                              'Generic Traffic Generator Port',
-                                              'PerfectStorm Chassis Shell 2G.GenericTrafficGeneratorPort',
-                                              'Ixia Chassis Shell 2G.GenericTrafficGeneratorPort'):
-            reservation_ports[get_family_attribute(my_api, port, 'Logical Name').Value.strip()] = port
+        for port in  get_resources_from_reservation(context,
+                                                    'Generic Traffic Generator Port',
+                                                    'PerfectStorm Chassis Shell 2G.GenericTrafficGeneratorPort',
+                                                    'Ixia Chassis Shell 2G.GenericTrafficGeneratorPort',
+                                                    'IxVM Virtual Traffic Chassis 2G.VirtualTrafficGeneratorPort'):
+            reservation_ports[get_family_attribute(context, port.Name, 'Logical Name').strip()] = port
 
-        perfectstorms = [ps.FullAddress for ps in get_reservation_resources(my_api, reservation_id,
-                                                                            'PerfectStorm Chassis Shell 2G')]
+        perfectstorms = [ps.FullAddress for ps in get_resources_from_reservation(context,
+                                                                                'PerfectStorm Chassis Shell 2G')]
 
         for name, element in config_elements.items():
             if name in reservation_ports:
@@ -80,10 +75,10 @@ class IxlHandler(TrafficHandler):
 
         self.logger.info("Port Reservation Completed")
 
-    def start_test(self, blocking):
+    def start_traffic(self, context, blocking):
         self.ixl.start_test(is_blocking(blocking))
 
-    def stop_test(self):
+    def stop_traffic(self, context):
         self.ixl.stop_test()
 
     def get_statistics(self, context, view_name, output_type):
@@ -104,15 +99,3 @@ class IxlHandler(TrafficHandler):
             return output.getvalue().strip()
         else:
             raise Exception('Output type should be CSV/JSON - got "{}"'.format(output_type))
-
-    #
-    # Private auxiliary methods.
-    #
-
-    def _windows_tcl_env(self, client_install_path):
-        self.logger.info('Copy reg1.2 to Tcl')
-        ixia_tcl_reg_path = client_install_path + '/3rdParty/Python2.7/Lib/tcl8.5/reg1.2'
-        python_interpreter_path = sys.executable.replace('\\', '/').rstrip('Scripts/python.exe')
-        python_tcl_reg_path = python_interpreter_path + "/tcl/reg1.2"
-        if not (os.path.isdir(python_tcl_reg_path)):
-            copy_tree(ixia_tcl_reg_path, python_tcl_reg_path)

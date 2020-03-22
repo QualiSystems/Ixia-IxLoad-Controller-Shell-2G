@@ -2,9 +2,9 @@
 
 # **Ixia IxLoad Controller 2G Shell**  
 
-Release date: January 2019
+Release date: March 2020
 
-Shell version: 2.1.0
+Shell version: 2.2.0
 
 Document version: 1.0
 
