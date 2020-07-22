@@ -5,8 +5,8 @@ import pytest
 
 from cloudshell.api.cloudshell_api import AttributeNameValue, InputNameValue
 from cloudshell.traffic.tg import IXLOAD_CONTROLLER_MODEL
-from cloudshell.traffic.common import add_resources_to_reservation, get_resources_from_reservation, get_reservation_id
-from cloudshell.traffic.tg_helper import get_reservation_resources, set_family_attribute
+from cloudshell.traffic.helpers import (set_family_attribute, add_resources_to_reservation,
+                                        get_resources_from_reservation, get_reservation_id)
 from shellfoundry.releasetools.test_helper import (create_init_command_context, create_session_from_deployment,
                                                    create_service_command_context, end_reservation)
 
@@ -15,8 +15,8 @@ from src.ixl_driver import IxLoadControllerShell2GDriver
 windows_840 = '192.168.65.68'
 windows_850 = '192.168.65.94'
 linux_850 = '192.168.65.87'
-windows_900 = '192.168.65.54'
-linux_900 = '192.168.65.41'
+windows_900 = '192.168.15.25'
+linux_900 = '192.168.65.69'
 localhost_900 = 'localhost'
 
 originate_840 = 'ixia-840-1/Module1/Port1'
@@ -35,14 +35,7 @@ server_properties = {windows_840: {'ports': [originate_840, terminate_840], 'ixv
                      windows_900: {'ports': [originate_900, terminate_900], 'ixversion': '9.00.0.347',
                                    'apikey': 'YWRtaW58elR0MTNZR0NPRTYyREpubGFWOXJzT3R6Ry13PQ=='},
                      linux_900: {'ports': [originate_900, terminate_900], 'ixversion': '9.00.0.347',
-                                 'apikey': None},
-                     localhost_900: {'ports': [originate_900, terminate_900], 'ixversion': '9.00.0.347',
-                                     'apikey': 'YWRtaW58elR0MTNZR0NPRTYyREpubGFWOXJzT3R6Ry13PQ=='}}
-
-
-@pytest.fixture()
-def model():
-    yield IXLOAD_CONTROLLER_MODEL
+                                 'apikey': None}}
 
 
 @pytest.fixture()
@@ -50,8 +43,9 @@ def alias():
     yield 'IxLoad Controller'
 
 
-@pytest.fixture(params=[localhost_900, linux_900],
-                ids=['windows-900', 'linux-900'])
+# @pytest.fixture(params=[localhost_900, linux_900],
+#                 ids=['windows-900', 'linux-900'])
+@pytest.fixture(params=[windows_900])
 def server(request):
     controller_address = request.param
     ixversion = server_properties[controller_address]['ixversion']
@@ -66,14 +60,14 @@ def session():
 
 
 @pytest.fixture()
-def driver(session, model, server):
+def driver(session, server):
     controller_address, controller_version, apikey, _ = server
-    attributes = {model + '.Address': controller_address,
-                  model + '.Controller Version': controller_version,
-                  model + '.ApiKey': apikey,
-                  model + '.License Server': '192.168.42.61'}
-    init_context = create_init_command_context(session, 'CS_TrafficGeneratorController', model, 'na', attributes,
-                                               'Service')
+    attributes = {f'{IXLOAD_CONTROLLER_MODEL}.Address': controller_address,
+                  f'{IXLOAD_CONTROLLER_MODEL}.Controller Version': controller_version,
+                  f'{IXLOAD_CONTROLLER_MODEL}.ApiKey': apikey,
+                  f'{IXLOAD_CONTROLLER_MODEL}.License Server': '192.168.42.61'}
+    init_context = create_init_command_context(session, 'CS_TrafficGeneratorController', IXLOAD_CONTROLLER_MODEL,
+                                               'na', attributes, 'Service')
     driver = IxLoadControllerShell2GDriver()
     driver.initialize(init_context)
     print(driver.logger.handlers[0].baseFilename)
@@ -82,13 +76,13 @@ def driver(session, model, server):
 
 
 @pytest.fixture()
-def context(session, model, alias, server):
+def context(session, alias, server):
     controller_address, controller_version, apikey, ports = server
-    attributes = [AttributeNameValue(model + '.Address', controller_address),
-                  AttributeNameValue(model + '.Controller Version', controller_version),
-                  AttributeNameValue(model + '.ApiKey', apikey),
-                  AttributeNameValue(model + '.License Server', '192.168.42.61')]
-    context = create_service_command_context(session, model, alias, attributes)
+    attributes = [AttributeNameValue(f'{IXLOAD_CONTROLLER_MODEL}.Address', controller_address),
+                  AttributeNameValue(f'{IXLOAD_CONTROLLER_MODEL}.Controller Version', controller_version),
+                  AttributeNameValue(f'{IXLOAD_CONTROLLER_MODEL}.ApiKey', apikey),
+                  AttributeNameValue(f'{IXLOAD_CONTROLLER_MODEL}.License Server', '192.168.42.61')]
+    context = create_service_command_context(session, IXLOAD_CONTROLLER_MODEL, alias, attributes)
     add_resources_to_reservation(context, *ports)
     reservation_ports = get_resources_from_reservation(context,
                                                        'Generic Traffic Generator Port',
@@ -99,7 +93,7 @@ def context(session, model, alias, server):
     end_reservation(session, get_reservation_id(context))
 
 
-class TestIxLoadControllerDriver(object):
+class TestIxLoadControllerDriver:
 
     def test_load_config(self, driver, context):
         self._load_config(driver, context, 'test_config')
@@ -115,7 +109,7 @@ class TestIxLoadControllerDriver(object):
         driver.load_config(context, path.join(path.dirname(__file__), config_file))
 
 
-class TestIxLoadControllerShell(object):
+class TestIxLoadControllerShell:
 
     def test_load_config(self, session, context, alias):
         self._load_config(session, context, alias, 'test_config')
