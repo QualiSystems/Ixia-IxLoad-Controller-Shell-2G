@@ -1,17 +1,17 @@
-import json
 import csv
+import json
 import io
 import os
 from collections import OrderedDict
 
-from cloudshell.traffic.tg import TrafficHandler, attach_stats_csv
-from cloudshell.traffic.common import get_reservation_id
-from cloudshell.traffic.tg_helper import get_address, is_blocking, get_family_attribute, get_resources_from_reservation
+from cloudshell.traffic.helpers import get_location, get_family_attribute, get_reservation_id, get_resources_from_reservation
+from cloudshell.traffic.tg import TrafficHandler, attach_stats_csv, is_blocking
 
+from trafficgenerator.tgn_utils import TgnError
 from ixload.ixl_app import init_ixl
 from ixload.ixl_statistics_view import IxlStatView
 
-from .ixl_data_model import IxLoad_Controller_Shell_2G
+from ixl_data_model import IxLoad_Controller_Shell_2G
 
 
 class IxlHandler(TrafficHandler):
@@ -19,7 +19,7 @@ class IxlHandler(TrafficHandler):
     def initialize(self, context, logger):
 
         service = IxLoad_Controller_Shell_2G.create_from_context(context)
-        super(self.__class__, self).initialize(service, logger)
+        super().initialize(service, logger)
 
         self.ixl = init_ixl(self.logger)
 
@@ -41,7 +41,6 @@ class IxlHandler(TrafficHandler):
         self.ixl.disconnect()
 
     def load_config(self, context, ixia_config_file_name):
-        reservation_id = get_reservation_id(context)
 
         self.ixl.load_config(ixia_config_file_name)
         self.ixl.repository.test.set_attributes(enableForceOwnership=False)
@@ -60,19 +59,17 @@ class IxlHandler(TrafficHandler):
 
         for name, element in config_elements.items():
             if name in reservation_ports:
-                address = get_address(reservation_ports[name])
-                ip_address, module, port = address.split('/')
-                if ip_address in perfectstorms:
-                    address = '{}/{}/{}'.format(ip_address, module, int(port) + 1)
-                self.logger.debug('Logical Port {} will be reserved on Physical location {}'.format(name, address))
-                element.reserve(address)
+                location = get_location(reservation_ports[name])
+                ip, module, port = location.split('/')
+                if ip in perfectstorms:
+                    location = f'{ip}/{module}/{int(port) + 1}'
+                self.logger.debug(f'Logical Port {name} will be reserved on Physical location {location}')
+                element.reserve(location)
             else:
-                self.logger.error('Configuration element "{}" not found in reservation elements {}'.
-                                  format(element, reservation_ports.keys()))
-                raise Exception('Configuration element "{}" not found in reservation elements {}'.
-                                format(element, reservation_ports.keys()))
+                raise TgnError(f'Configuration element "{element}" not found in reservation elements '
+                               '{reservation_ports.keys()}')
 
-        self.logger.info("Port Reservation Completed")
+        self.logger.info('Port Reservation Completed')
 
     def start_traffic(self, context, blocking):
         self.ixl.start_test(is_blocking(blocking))
@@ -89,12 +86,14 @@ class IxlHandler(TrafficHandler):
             statistics_str = json.dumps(statistics, indent=4, sort_keys=True, ensure_ascii=False)
             return json.loads(statistics_str)
         elif output_type.lower().strip() == 'csv':
-            output = io.BytesIO()
+            output = io.StringIO()
             w = csv.DictWriter(output, ['Timestamp'] + stats_obj.captions)
             w.writeheader()
             for time_stamp in statistics:
-                w.writerow(OrderedDict({'Timestamp': time_stamp}.items() + statistics[time_stamp].items()))
+                line = OrderedDict({'Timestamp': time_stamp})
+                line.update(statistics[time_stamp])
+                w.writerow(line)
             attach_stats_csv(context, self.logger, view_name, output.getvalue().strip())
             return output.getvalue().strip()
         else:
-            raise Exception('Output type should be CSV/JSON - got "{}"'.format(output_type))
+            raise TgnError(f'Output type should be CSV/JSON - got "{output_type}"')
