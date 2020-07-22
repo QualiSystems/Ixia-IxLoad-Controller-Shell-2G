@@ -5,13 +5,13 @@ import os
 from collections import OrderedDict
 
 from cloudshell.traffic.tg import TrafficHandler, attach_stats_csv
-from cloudshell.traffic.common import get_reservation_id, get_resources_from_reservation
-from cloudshell.traffic.tg_helper import get_address, is_blocking, get_family_attribute
+from cloudshell.traffic.common import get_reservation_id
+from cloudshell.traffic.tg_helper import get_address, is_blocking, get_family_attribute, get_resources_from_reservation
 
 from ixload.ixl_app import init_ixl
 from ixload.ixl_statistics_view import IxlStatView
 
-from ixl_data_model import IxLoad_Controller_Shell_2G
+from .ixl_data_model import IxLoad_Controller_Shell_2G
 
 
 class IxlHandler(TrafficHandler):
@@ -46,7 +46,6 @@ class IxlHandler(TrafficHandler):
         self.ixl.load_config(ixia_config_file_name)
         self.ixl.repository.test.set_attributes(enableForceOwnership=False)
         config_elements = self.ixl.repository.get_elements()
-
 
         reservation_ports = {}
         for port in  get_resources_from_reservation(context,
