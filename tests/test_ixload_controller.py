@@ -1,5 +1,4 @@
 
-import sys
 from os import path
 import json
 import pytest
@@ -16,7 +15,7 @@ from src.ixl_driver import IxLoadControllerShell2GDriver
 windows_840 = '192.168.65.68'
 windows_850 = '192.168.65.94'
 linux_850 = '192.168.65.87'
-windows_900 = '192.168.15.25'
+windows_900 = 'localhost'
 linux_900 = '192.168.65.69'
 localhost_900 = 'localhost'
 
@@ -46,7 +45,7 @@ def alias():
 
 # @pytest.fixture(params=[localhost_900, linux_900],
 #                 ids=['windows-900', 'linux-900'])
-@pytest.fixture(params=[windows_900])
+@pytest.fixture(params=[linux_900])
 def server(request):
     controller_address = request.param
     ixversion = server_properties[controller_address]['ixversion']
