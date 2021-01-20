@@ -37,4 +37,12 @@ node_types:
         tags:
         - user_input
         type: string
+      Licensing Mode:
+        default: Subscription
+        description: License server mode.
+        tags:
+        - user_input
+        type: string
+        constraints:
+          - valid_values: [Subscription,Perpetual]
 tosca_definitions_version: tosca_simple_yaml_1_0

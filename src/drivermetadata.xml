@@ -1,4 +1,4 @@
-<Driver Description="IxLoad controller shell" MainClass="ixl_driver.IxLoadControllerShell2GDriver" Name="IxLoadControllerShell2GDriver" Version="3.0.1" PythonVersion="3">
+<Driver Description="IxLoad controller shell" MainClass="ixl_driver.IxLoadController2GDriver" Name="IxLoadController2GDriver" Version="3.0.1" PythonVersion="3">
     <Layout>
 
         <Category Name="Hidden Commands">

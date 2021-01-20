@@ -72,7 +72,7 @@ class LegacyUtils(object):
         return inspect.getmembers(sys.modules[__name__], inspect.isclass)
 
 
-class IxLoad_Controller_Shell_2G(object):
+class IxLoadControllerShell2G(object):
     def __init__(self, name):
         """
         
@@ -92,9 +92,9 @@ class IxLoad_Controller_Shell_2G(object):
         :param context: cloudshell.shell.core.driver_context.ResourceCommandContext
         :type context: cloudshell.shell.core.driver_context.ResourceCommandContext
         :return:
-        :rtype IxLoad Controller Shell 2G
+        :rtype IxLoadControllerShell2G
         """
-        result = IxLoad_Controller_Shell_2G(name=context.resource.name)
+        result = IxLoadControllerShell2G(name=context.resource.name)
         for attr in context.resource.attributes:
             result.attributes[attr] = context.resource.attributes[attr]
         return result
@@ -152,7 +152,7 @@ class IxLoad_Controller_Shell_2G(object):
         Returns the name of the Cloudshell model
         :return:
         """
-        return 'IxLoad Controller Shell 2G'
+        return 'IxLoadControllerShell2G'
 
     @property
     def apikey(self):
@@ -198,6 +198,21 @@ class IxLoad_Controller_Shell_2G(object):
         :type value: str
         """
         self.attributes['IxLoad Controller Shell 2G.License Server'] = value
+
+    @property
+    def licensing_mode(self):
+        """
+        :rtype: str
+        """
+        return self.attributes['IxLoad Controller Shell 2G.Licensing Mode'] if 'IxLoad Controller Shell 2G.Licensing Mode' in self.attributes else None
+
+    @licensing_mode.setter
+    def licensing_mode(self, value='Subscription'):
+        """
+        License server mode.
+        :type value: str
+        """
+        self.attributes['IxLoad Controller Shell 2G.Licensing Mode'] = value
 
     @property
     def user(self):

@@ -4,21 +4,21 @@ import io
 import os
 from collections import OrderedDict
 
-from cloudshell.traffic.helpers import get_location, get_family_attribute, get_reservation_id, get_resources_from_reservation
-from cloudshell.traffic.tg import TrafficHandler, attach_stats_csv, is_blocking
+from cloudshell.traffic.helpers import get_location, get_family_attribute, get_resources_from_reservation
+from cloudshell.traffic.tg import IXIA_CHASSIS_MODEL, PERFECT_STORM_CHASSIS_MODEL, TrafficHandler, attach_stats_csv, is_blocking
 
 from trafficgenerator.tgn_utils import TgnError
 from ixload.ixl_app import init_ixl
 from ixload.ixl_statistics_view import IxlStatView
 
-from ixl_data_model import IxLoad_Controller_Shell_2G
+from ixl_data_model import IxLoadControllerShell2G
 
 
 class IxlHandler(TrafficHandler):
 
     def initialize(self, context, logger):
 
-        service = IxLoad_Controller_Shell_2G.create_from_context(context)
+        service = IxLoadControllerShell2G.create_from_context(context)
         super().initialize(service, logger)
 
         self.ixl = init_ixl(self.logger)
@@ -28,10 +28,12 @@ class IxlHandler(TrafficHandler):
         apikey = self.service.apikey
         auth = {'apikey': apikey, 'crt': None}
 
-        self.logger.info('connecting to server {} version {} using default port'.format(ixload_gw, version))
+        self.logger.info(f'connecting to server {ixload_gw} version {version} using default port')
         self.ixl.connect(version=version, ip=ixload_gw, port=None, auth=auth)
         if self.service.license_server:
-            self.ixl.controller.set_licensing(self.service.license_server)
+            license_server = self.service.license_server
+            licensing_mode = self.service.licensing_mode
+            self.ixl.controller.set_licensing(license_server, licensing_mode)
         if not self.ixl.is_remote:
             log_file_name = self.logger.handlers[0].baseFilename
             results_dir = (os.path.splitext(log_file_name)[0] + '--Results').replace('\\', '/')
@@ -47,15 +49,14 @@ class IxlHandler(TrafficHandler):
         config_elements = self.ixl.repository.get_elements()
 
         reservation_ports = {}
-        for port in  get_resources_from_reservation(context,
-                                                    'Generic Traffic Generator Port',
-                                                    'PerfectStorm Chassis Shell 2G.GenericTrafficGeneratorPort',
-                                                    'Ixia Chassis Shell 2G.GenericTrafficGeneratorPort',
-                                                    'IxVM Virtual Traffic Chassis 2G.VirtualTrafficGeneratorPort'):
+        for port in get_resources_from_reservation(context,
+                                                   'Generic Traffic Generator Port',
+                                                   f'{PERFECT_STORM_CHASSIS_MODEL}.GenericTrafficGeneratorPort',
+                                                   f'{IXIA_CHASSIS_MODEL}.GenericTrafficGeneratorPort',
+                                                   'IxVM Virtual Traffic Chassis 2G.VirtualTrafficGeneratorPort'):
             reservation_ports[get_family_attribute(context, port.Name, 'Logical Name').strip()] = port
 
-        perfectstorms = [ps.FullAddress for ps in get_resources_from_reservation(context,
-                                                                                'PerfectStorm Chassis Shell 2G')]
+        perfectstorms = [ps.FullAddress for ps in get_resources_from_reservation(context, PERFECT_STORM_CHASSIS_MODEL)]
 
         for name, element in config_elements.items():
             if name in reservation_ports:
@@ -66,8 +67,8 @@ class IxlHandler(TrafficHandler):
                 self.logger.debug(f'Logical Port {name} will be reserved on Physical location {location}')
                 element.reserve(location)
             else:
-                raise TgnError(f'Configuration element "{element}" not found in reservation elements '
-                               '{reservation_ports.keys()}')
+                elements = reservation_ports.keys()
+                raise TgnError(f'Configuration element "{element}" not found in reservation elements {elements}')
 
         self.logger.info('Port Reservation Completed')
 

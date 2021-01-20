@@ -5,7 +5,7 @@ from cloudshell.traffic.tg import TgControllerDriver, write_to_reservation_out
 from ixl_handler import IxlHandler
 
 
-class IxLoadControllerShell2GDriver(TgControllerDriver):
+class IxLoadController2GDriver(TgControllerDriver):
 
     def __init__(self):
         self.handler = IxlHandler()
