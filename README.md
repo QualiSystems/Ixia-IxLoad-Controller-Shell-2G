@@ -2,9 +2,9 @@
 
 # **Ixia IxLoad Controller 2G Shell**  
 
-Release date: March 2020
+Release date: January 2021
 
-Shell version: 2.2.0
+Shell version: 3.0.1
 
 Document version: 1.0
 
@@ -48,11 +48,9 @@ For detailed information about the shell’s structure and attributes, see the [
 
 ### Requirements
 
-Release: **Ixia IxLoad Controller 2G**
+▪ IxLoadGateway: 9.00 and up, Windows or Linux.
 
-▪ IxLoadGateway: 8.40 to 9.00, Windows or Linux.
-
-▪ CloudShell version: 8.3 GA Patch 3, 9.0 Patch 2, 9.1 GA and above
+▪ CloudShell version: 9.3 and above
 
 ### Data Model
 
@@ -105,10 +103,6 @@ The shell is displayed in the **Shells** page and can be used by domain administ
 In offline mode, import the shell into CloudShell and place any dependencies in the appropriate dependencies folder. The dependencies folder may differ, depending on the CloudShell version you are using:
 
 * For CloudShell version 8.3 and above, see [Adding Shell and script packages to the local PyPi Server repository](#adding-shell-and-script-packages-to-the-local-pypi-server-repository).
-
-* For CloudShell version 8.2, perform the appropriate procedure: [Adding Shell and script packages to the local PyPi Server repository](#adding-shell-and-script-packages-to-the-local-pypi-server-repository) or [Setting the python pythonOfflineRepositoryPath configuration key](#setting-the-python-pythonofflinerepositorypath-configuration-key).
-
-* For CloudShell versions prior to 8.2, see [Setting the python pythonOfflineRepositoryPath configuration key](#setting-the-python-pythonofflinerepositorypath-configuration-key).
 
 ### Adding shell and script packages to the local PyPi Server repository
 If your Quali Server and/or execution servers work offline, you will need to copy all required Python packages, including the out-of-the-box ones, to the PyPi Server's repository on the Quali Server computer (by default *C:\Program Files (x86)\QualiSystems\CloudShell\Server\Config\Pypi Server Repository*).
