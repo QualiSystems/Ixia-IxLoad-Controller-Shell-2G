@@ -1,6 +1,0 @@
--r src/requirements.txt
-
-pytest
-PyYAML
-
-shellfoundry_traffic

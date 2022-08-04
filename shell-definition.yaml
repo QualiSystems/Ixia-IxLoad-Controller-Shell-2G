@@ -1,12 +1,16 @@
 description: TOSCA based IxLoad service shell
 
+tosca_definitions_version: tosca_simple_yaml_1_0
+
 imports:
 - cloudshell_standard: cloudshell_traffic_generator_controller_standard_2_0_0.yaml
+
 metadata:
   template_author: Quali
   template_icon: shell-icon.png
   template_name: Ixia IxLoad Controller Shell 2G
-  template_version: 3.0.1
+  template_version: 3.1.0
+
 node_types:
   vendor.resource.IxLoad Controller Shell 2G:
     artifacts:
@@ -45,4 +49,3 @@ node_types:
         type: string
         constraints:
           - valid_values: [Subscription,Perpetual]
-tosca_definitions_version: tosca_simple_yaml_1_0
