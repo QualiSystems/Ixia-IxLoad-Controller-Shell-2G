@@ -7,7 +7,7 @@ install:
 	python -m pip install -U pip
 	pip install -i http://$(repo):8036 --trusted-host $(repo) -U --pre --no-cache-dir pyixload
 	pip install -i http://$(repo):8036 --trusted-host $(repo) -U --pre --no-cache-dir cloudshell-traffic
-	pip install -i http://$(repo):8036 --trusted-host $(repo) -U --pre -r requirements-dev.txt
+	pip install -r requirements-dev.txt
 
 build:
 	shellfoundry install
